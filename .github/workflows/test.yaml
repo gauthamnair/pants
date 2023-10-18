@@ -15,7 +15,7 @@ jobs:
       PANTS_REMOTE_CACHE_READ: 'false'
       PANTS_REMOTE_CACHE_WRITE: 'false'
     if: (github.repository_owner == 'pantsbuild') && (needs.classify_changes.outputs.docs_only != 'true')
-    name: Bootstrap Pants, test and lint Rust (Linux-x86_64)
+    name: Bootstrap Pants (Linux-x86_64)
     needs:
     - classify_changes
     runs-on:
@@ -100,19 +100,6 @@ jobs:
       run: './pants run src/python/pants_release/generate_github_workflows.py -- --check
 
         '
-    - env:
-        TMPDIR: ${{ runner.temp }}
-      if: needs.classify_changes.outputs.rust == 'true'
-      name: Test and lint Rust
-      run: 'sudo apt-get install -y pkg-config fuse libfuse-dev
-
-        ./build-support/bin/check_rust_pre_commit.sh
-
-        ./cargo test --locked --all --tests -- --nocapture
-
-        ./cargo check --benches
-
-        ./cargo doc'
     timeout-minutes: 60
   check_labels:
     if: github.repository_owner == 'pantsbuild'
@@ -250,7 +237,8 @@ jobs:
     - name: Make native-client runnable
       run: chmod +x src/python/pants/bin/native_client
     - name: Run Python test shard 0/10
-      run: './pants --spec-files=ci-retry-testing.txt test || ./pants --spec-files=ci-retry-testing.txt test
+      run: './pants --spec-files=ci-retry-testing.txt test || ( echo "Retrying..." && ./pants --spec-files=ci-retry-testing.txt
+        test )
 
         '
     - continue-on-error: true

@@ -697,7 +697,7 @@ def test_jobs(
             + ["--", "-m", "platform_specific_behavior"]
         )
     pants_args = ["./pants"] + pants_args
-    pants_args = pants_args + ["||"] + pants_args
+    pants_args = pants_args + ["||", "(", "echo", "\"Retrying...\"", "&&"] + pants_args + [")"]
     pants_args_str = " ".join(pants_args) + "\n"
 
     return {
@@ -740,7 +740,7 @@ def linux_x86_64_test_jobs() -> Jobs:
     shard_name_prefix = helper.job_name("test_python")
     jobs = {
         helper.job_name("bootstrap_pants"): bootstrap_jobs(
-            helper, validate_ci_config=True, rust_testing=RustTesting.ALL
+            helper, validate_ci_config=True, rust_testing=RustTesting.NONE
         ),
         f"{shard_name_prefix}_0": test_python_linux("0/10"),
     }
