@@ -686,12 +686,10 @@ def test_jobs(
     log_name = "python-test"
     pants_args = ["test"]
     if shard:
+        pants_args.insert(0, f"--spec-files=ci-retry-testing.txt")
         human_readable_job_name += f" Shard {shard}"
         human_readable_step_name = f"Run Python test shard {shard}"
         log_name += f"-{shard}"
-        # pants_args.append(f"--shard={shard}")
-    pants_args.append("src/python/pants/backend/javascript/goals/lockfile_test.py:tests")
-    pants_args.append("src/python/pants/backend/javascript/goals/tailor_test.py:tests")
     if platform_specific:
         pants_args = (
             ["--tag=+platform_specific_behavior"]

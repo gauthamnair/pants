@@ -1,0 +1,2 @@
+src/python/pants/backend/javascript/goals/lockfile_test.py:tests
+src/python/pants/backend/javascript/goals/tailor_test.py:tests
