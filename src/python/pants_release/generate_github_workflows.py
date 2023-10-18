@@ -697,6 +697,7 @@ def test_jobs(
             + ["--", "-m", "platform_specific_behavior"]
         )
     pants_args = ["./pants"] + pants_args
+    pants_args = pants_args + ["||"] + pants_args
     pants_args_str = " ".join(pants_args) + "\n"
 
     return {

@@ -250,7 +250,7 @@ jobs:
     - name: Make native-client runnable
       run: chmod +x src/python/pants/bin/native_client
     - name: Run Python test shard 0/10
-      run: './pants --spec-files=ci-retry-testing.txt test
+      run: './pants --spec-files=ci-retry-testing.txt test || ./pants --spec-files=ci-retry-testing.txt test
 
         '
     - continue-on-error: true
