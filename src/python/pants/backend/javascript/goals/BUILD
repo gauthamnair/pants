@@ -10,5 +10,6 @@ python_tests(
         "test_integration_test.py": dict(
             dependencies=["./jest_resources", "./mocha_resources"], timeout=240
         ),
+        "lockfile_test.py": {"timeout": 2},
     },
 )

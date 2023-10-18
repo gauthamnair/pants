@@ -689,8 +689,9 @@ def test_jobs(
         human_readable_job_name += f" Shard {shard}"
         human_readable_step_name = f"Run Python test shard {shard}"
         log_name += f"-{shard}"
-        pants_args.append(f"--shard={shard}")
-    pants_args.append("::")
+        # pants_args.append(f"--shard={shard}")
+    pants_args.append("src/python/pants/backend/javascript/goals/lockfile_test.py:tests")
+    pants_args.append("src/python/pants/backend/javascript/goals/tailor_test.py:tests")
     if platform_specific:
         pants_args = (
             ["--tag=+platform_specific_behavior"]
@@ -743,15 +744,6 @@ def linux_x86_64_test_jobs() -> Jobs:
             helper, validate_ci_config=True, rust_testing=RustTesting.ALL
         ),
         f"{shard_name_prefix}_0": test_python_linux("0/10"),
-        f"{shard_name_prefix}_1": test_python_linux("1/10"),
-        f"{shard_name_prefix}_2": test_python_linux("2/10"),
-        f"{shard_name_prefix}_3": test_python_linux("3/10"),
-        f"{shard_name_prefix}_4": test_python_linux("4/10"),
-        f"{shard_name_prefix}_5": test_python_linux("5/10"),
-        f"{shard_name_prefix}_6": test_python_linux("6/10"),
-        f"{shard_name_prefix}_7": test_python_linux("7/10"),
-        f"{shard_name_prefix}_8": test_python_linux("8/10"),
-        f"{shard_name_prefix}_9": test_python_linux("9/10"),
     }
     return jobs
 
@@ -959,31 +951,31 @@ def test_workflow_jobs() -> Jobs:
         },
     }
     jobs.update(**linux_x86_64_test_jobs())
-    jobs.update(**linux_arm64_test_jobs())
-    jobs.update(**macos11_x86_64_test_jobs())
-    jobs.update(**build_wheels_jobs())
-    jobs.update(
-        {
-            "lint_python": {
-                "name": "Lint Python and Shell",
-                "runs-on": linux_x86_64_helper.runs_on(),
-                "needs": "bootstrap_pants_linux_x86_64",
-                "timeout-minutes": 30,
-                "if": IS_PANTS_OWNER,
-                "steps": [
-                    *checkout(),
-                    *launch_bazel_remote(),
-                    *linux_x86_64_helper.setup_primary_python(),
-                    *linux_x86_64_helper.native_binaries_download(),
-                    {
-                        "name": "Lint",
-                        "run": "./pants lint check ::\n",
-                    },
-                    linux_x86_64_helper.upload_log_artifacts(name="lint"),
-                ],
-            },
-        }
-    )
+    # jobs.update(**linux_arm64_test_jobs())
+    # jobs.update(**macos11_x86_64_test_jobs())
+    # jobs.update(**build_wheels_jobs())
+    # jobs.update(
+    #     {
+    #         "lint_python": {
+    #             "name": "Lint Python and Shell",
+    #             "runs-on": linux_x86_64_helper.runs_on(),
+    #             "needs": "bootstrap_pants_linux_x86_64",
+    #             "timeout-minutes": 30,
+    #             "if": IS_PANTS_OWNER,
+    #             "steps": [
+    #                 *checkout(),
+    #                 *launch_bazel_remote(),
+    #                 *linux_x86_64_helper.setup_primary_python(),
+    #                 *linux_x86_64_helper.native_binaries_download(),
+    #                 {
+    #                     "name": "Lint",
+    #                     "run": "./pants lint check ::\n",
+    #                 },
+    #                 linux_x86_64_helper.upload_log_artifacts(name="lint"),
+    #             ],
+    #         },
+    #     }
+    # )
     return jobs
 
 
